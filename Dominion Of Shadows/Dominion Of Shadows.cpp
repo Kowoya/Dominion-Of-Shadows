@@ -1,41 +1,60 @@
-#include<iostream>
-
+#include <iostream>
 using namespace std;
 
-//It's a dev code brench
+// Базовий клас
+class Character {
+protected:
+    string name;
+    int health;
 
-struct Character {
-	string name;
-	string affiliation;
-	int sanity;
+public:
+    Character(string n, int h) : name(n), health(h) {}
+
+    virtual void attack() = 0;
+
+    void takeDamage(int amount) {
+        health -= amount;
+        if (health < 0) health = 0;
+        cout << name << " takes " << amount << " damage. Health = " << health << endl;
+    }
+
+    int getHealth() const { return health; }
 };
 
-struct Player {
-	int ritualKnowledge;
+class Player : public Character {
+private:
+    int experience;
 
+public:
+    Player(string n, int h, int xp) : Character(n, h), experience(xp) {}
+
+    void attack() override {
+        cout << name << " attacks with a sword!" << endl;
+        experience += 10;
+    }
+
+    void castSpell() {
+        cout << name << " casts a protective spell!" << endl;
+    }
+
+    void showStatus() const {
+        cout << "Player: " << name << ", Health: " << health << ", XP: " << experience << endl;
+    }
 };
 
-struct Enemy {
-	string name;
-	int damage;
-	int aggressiveness;
-	int lvl;
-};
+class Enemy : public Character {
+public:
+    Enemy(string n, int h) : Character(n, h) {}
 
-struct PossessedEnemy {
-	string demonName;
-	string humanName;
-	int possessionStrength;
-	int demonLvl;
-};
-
-struct Item {
-	int weight;
-	int rarity;
+    void attack() override {
+        cout << name << " strikes viciously!" << endl;
+    }
 };
 
 int main() {
-	cout << "Hello in \"Dominion Of Shadows\". Enjoy the game.";
-
-	return 0;
+    Player p("Alex", 100, 5);  
+    p.showStatus();           
+    p.attack();               
+    p.takeDamage(20);          
+    p.castSpell();          
 }
